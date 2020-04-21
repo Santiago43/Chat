@@ -1,0 +1,40 @@
+
+
+.letra{
+	font-family: cursive;
+	font-size: 300%;
+	text-align: center;
+	font-style: italic;
+	width: 100%;
+}
+
+.encabezado{
+	text-align: center;
+	background-image: 
+    url("img1.jpg");
+}
+
+footer{
+	text-align: center; 
+}
+*{
+	position: relative;
+	}
+.imagenes{
+	width:2080px;
+	height:600px;
+	position: center;
+}
+body{
+	background-image: 
+	linear-gradient(
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.7)
+    ),
+    url("img1.jpg"); 
+	opacity: 94%;
+	background-repeat: repeat;
+	background-position: center;
+	position: relative;
+	background-size: cover;
+}

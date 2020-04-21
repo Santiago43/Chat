@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="css/formato.css">
+	<title>Login</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+<body>
+
+
+	<div class="ui inverted segment">
+		<h1 class="letra"> Inicio </h1>
+	</div>
+	</br></br></br>
+	<div class="ui inverted segment">
+		<div class="ui inverted placeholder segment">
+			<div class="ui two column very relaxed stackable grid">
+				<div class="column">
+					<div class="ui form">
+						<div class="field">
+							<label style="color:white;">Usuario</label>
+							<div class="ui left icon input">
+								<input id="user" type="text" placeholder="Usuario">
+								<i class="at icon"></i>
+							</div>
+						</div>
+					</div>
+					</br>
+					<div id="ingreso" class="ui blue submit button">
+						<i class="sign-in icon"></i>
+						Ingreso</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+ $("#ingreso").click(function () {
+	
+	user = $("#user").val();
+	document.cookie ="cookie="+user;
+	console.log(user);
+	window.location.assign("index2.html");
+
+});
+
+</script>
+<script type="text/javascript" src="js/semantic.min.js"></script>
+
+</html>
