@@ -91,3 +91,7 @@ function getCookie(cname) {
 	}
 	return "";
 } 
+
+function hello(){
+	console.log("hola mundo");
+}
