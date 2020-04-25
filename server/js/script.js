@@ -36,7 +36,7 @@ websocket.onmessage = function (evt) { // cuando se recibe un mensaje
 			//Nueva conexión
 			console.log(obj.mensaje);
 			$("tbody").append('<tr> <td>'+obj.mensaje+'</td></tr>');
-			$("#conectados").append('<option value="'++'"></option>')
+			$("#conectados").append('<option value="'+obj.mensaje+'">'+obj.mensaje+'</option>')
 		}
 		//$(".cajaContenedora").append("<b>" + chat.name + ": <b>" + chat.mensaje + "<br>");
 	}
