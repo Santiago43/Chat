@@ -37,7 +37,7 @@ public class Server extends WebSocketServer{
     @Override
     public void onMessage(WebSocket conn, String message) {
         JSONObject obj = new JSONObject(message);
-        String tipo = (String)obj.get("type"); 
+        String tipo = (String)obj.get("tipo"); 
          if (tipo.equals("ping")) {
             message="pong";
             conn.send(message); 
@@ -45,7 +45,7 @@ public class Server extends WebSocketServer{
             this.sendToAll(conn,(String) obj.get("message")); 
         }
         else if(tipo.equals("nuevo")){
-            String object = "{\"tipo\":\"conexion\",\"mensaje\":\"Se conectó: "+obj.get("user")+"}";
+            String object = "{\"tipo\":\"conexion\",\"mensaje\":\""+obj.get("user")+"\",\"}";
             this.sendToAll(conn, object);
         }
         else if(tipo.equals("private")){

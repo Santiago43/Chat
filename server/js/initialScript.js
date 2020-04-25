@@ -23,9 +23,9 @@ function setCookie(cname, cvalue, exdays) {
 var user;
  $("#ingreso").click(function () {
 	
-	user = $("#user").val();
+    user = $("#user").val();
     setCookie("usuario",user,0.5);
-	//window.location.assign("index2.html");
+	window.location.assign("index2.html");
 
 });
 
