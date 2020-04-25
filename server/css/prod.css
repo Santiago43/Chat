@@ -10,8 +10,6 @@
 
 .encabezado{
 	text-align: center;
-	background-image: 
-    url("img1.jpg");
 }
 
 footer{
@@ -30,8 +28,7 @@ body{
 	linear-gradient(
       rgba(0, 0, 0, 0.7),
       rgba(0, 0, 0, 0.7)
-    ),
-    url("img3.jpg"); 
+    );
 	opacity: 94%;
 	background-repeat: repeat;
 	background-position: center;

@@ -2,20 +2,15 @@
 var wait = ms => new Promise((r, j) => setTimeout(r, ms));
 var wsUri = "ws://localhost:30001";
 var websocket = new WebSocket(wsUri); //creamos el socket
-var usuario1;
-
-
-usuario1 = getCookie("cookie");
-console.log(usuario1);
 
 websocket.onopen = function (evt) { //manejamos los eventos...
 	console.log("Conectado..."); //... y aparecerá en la pantalla
 	ping();
 	var a = {
 		type: "nuevo",
-		user: usuario1
+		user: getCookie("user")
 	};
-	websocket(JSON.stringify(a));
+	enviarMensaje(JSON.stringify(a));
 };
 
 websocket.onmessage = function (evt) { // cuando se recibe un mensaje
@@ -25,8 +20,17 @@ websocket.onmessage = function (evt) { // cuando se recibe un mensaje
 	if (evt.data === "pong") {
 		ping();
 	} else {
-		var chat = JSON.parse(datos);
-		$(".cajaContenedora").append("<b>" + chat.name + ": <b>" + chat.mensaje + "<br>");
+		var obj = JSON.parse(datos);
+		if(obj.tipo==="hash"){
+			setCookie("hash",obj.hash,10);
+			var nombreUser= getCookie("user");
+			var texto = {
+				tipo:'nuevo',
+				user: nombreUser
+			};
+			enviarMensaje(JSON.stringify(texto));
+		}
+		//$(".cajaContenedora").append("<b>" + chat.name + ": <b>" + chat.mensaje + "<br>");
 	}
 
 };
@@ -41,7 +45,9 @@ function enviarMensaje(texto) {
 };
 
  $("#enviar").click(function () {
-	var usuario = {name: usuario1,mensaje: $("#mensaje").val()}
+	var usuario = {
+		name: getCookie("user"),
+		mensaje: $("#mensaje").val()}
 	var vaina = JSON.stringify(usuario);
 	var a = {
 		type: 'message',
@@ -59,7 +65,7 @@ $("#privado").click(function () {
 		type: "private",
 		nombre: usuario1,
 		hashOrigen :"",
-		hashDestino _"",
+		hashDestino :"",
 		message: vaina
 	};
 	console.log(vaina);
@@ -76,18 +82,3 @@ function ping() {
 }
 
 
-function getCookie(cname) {
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0) == ' ') {
-			c = c.substring(1);
-		}
-		if (c.indexOf(name) == 0) {
-			return c.substring(name.length, c.length);
-		}
-	}
-	return "";
-} 

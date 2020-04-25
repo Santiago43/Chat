@@ -8,16 +8,24 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <body>
-    <div class="cajaContenedora"> </div>
-    <div>
-    
-        Digite acá el mensaje: <input id="mensaje" type="text" name="msj">
-
-        <button id="enviar">Enviar</button>
-        <button id="privado">Privado</button>
+    <div class="ui grid">
+        <div id="chat" class="six wide column">
+            <div class="cajaContenedora"> </div>
+            <div>
+            
+                Digite acá el mensaje: <input id="mensaje" type="text" name="msj">
+        
+                <button id="enviar">Enviar</button>
+                <button id="privado">Privado</button>
+            </div>
+        </div>
+        <div id="usuarios" class="ui four wide column">
+            
+        </div>
     </div>
-
-    <script type="text/javascript" src="js/script.js"></script>
+ 
+    
 </body>
-
+<script type="text/javascript" src="js/initialScript.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
 </html>

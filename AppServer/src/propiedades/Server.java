@@ -29,7 +29,7 @@ public class Server extends WebSocketServer{
         Cliente cliente = new Cliente();
         cliente.setConn(conn);
         cliente.setHash(conn.getRemoteSocketAddress().hashCode()); 
-        String object = "{\"tipo\":\"hash\",\"hash\":\""+cliente.getHash()+"}";
+        String object = "{\"tipo\":\"hash\",\"hash\":\""+cliente.getHash()+"\"}";
         conn.send(object);
         clients.add(cliente);
     }
@@ -64,6 +64,12 @@ public class Server extends WebSocketServer{
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         System.out.println("Client disconnected: " + reason);
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).getConn().equals(i)) {
+                clients.remove(i);
+                break;
+            }
+        }
     }
 
     @Override
