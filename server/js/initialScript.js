@@ -1,13 +1,3 @@
- $("#ingreso").click(function () {
-	
-	user = $("#user").val();
-    console.log(user);
-    setCookie("user",user,10);
-	console.log(user);
-	//window.location.assign("index2.html");
-
-});
-
 function getCookie(cname) {
 	var name = cname + "=";
 	var decodedCookie = decodeURIComponent(document.cookie);
@@ -24,8 +14,18 @@ function getCookie(cname) {
 	return "";
 } 
 function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	var expires = "expires="+ d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
   }
+
+var user;
+ $("#ingreso").click(function () {
+	
+	user = $("#user").val();
+    setCookie("usuario",user,0.5);
+	//window.location.assign("index2.html");
+
+});
+
