@@ -76,6 +76,7 @@ function enviarMensaje(texto) {
 		tipo: 'publico',
 		message: mensajePublico
 	};
+	$(".cajaContenedora").append("<b>" + usuario.nombre + ": </b>" + usuario.mensaje + "<br>");
 //	console.log(vaina);
 	enviarMensaje(JSON.stringify(a));
 });
@@ -92,6 +93,7 @@ $("#privado").click(function () {
 		hashDestino :$("#conectados").val(),
 		message: mensajePrivado
 	};
+	$(".cajaContenedora").append("<b>" + usuario.nombre + "(en privado): </b>" + usuario.mensaje + "<br>");
 //	console.log(vaina);
 	enviarMensaje(JSON.stringify(a));
 });
