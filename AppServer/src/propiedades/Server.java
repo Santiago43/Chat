@@ -58,10 +58,10 @@ public class Server extends WebSocketServer {
                     if (clients.get(i).getHash()==Integer.parseInt(obj.getString("hash"))) {
                         clients.get(i).setNombre(obj.getString("usuario")); 
                         object = "{\"tipo\":\"conexion\",\"hash\":\""+clients.get(i).getHash()+"\",\"nombre\":\"" + clients.get(i).getNombre() + "\"}";
+                        this.sendToAll(conn, object); 
                         break;
                     }
-                }
-                this.sendToAll(conn, object); 
+                }           
                 break;
             case "privado":
                 int hashDestino = (int) obj.getInt("hashDestino");
