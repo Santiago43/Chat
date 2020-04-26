@@ -1,7 +1,5 @@
 package propiedades;
 
-
-
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +11,11 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
 
-
-public class Server extends WebSocketServer{
+public class Server extends WebSocketServer {
 //	private static Map<Integer,Set<WebSocket>> Rooms = new HashMap<>();
-	private static List<Cliente> clients=new ArrayList();
 
-    
+    private static List<Cliente> clients = new ArrayList();
+
     public Server() {
         super(new InetSocketAddress(30001));
     }
@@ -28,8 +25,15 @@ public class Server extends WebSocketServer{
         System.out.println("New client connected: " + conn.getRemoteSocketAddress() + " hash " + conn.getRemoteSocketAddress().hashCode());
         Cliente cliente = new Cliente();
         cliente.setConn(conn);
-        cliente.setHash(conn.getRemoteSocketAddress().hashCode()); 
-        String object = "{\"tipo\":\"hash\",\"hash\":\""+cliente.getHash()+"\"}";
+        cliente.setHash(conn.getRemoteSocketAddress().hashCode());
+        String object = "{\"tipo\":\"hash\",\"hash\":\"" + cliente.getHash() + "\",\"conectados\":[";
+        for (int i=0;i<clients.size();i++) {
+            object +="{\"usuario\": \""+clients.get(i).getNombre()+"\",\"hash\":\""+clients.get(i).getHash()+"\"}";
+            if(i<clients.size()-1){
+                object +=",";
+            }
+        }
+        object += "]}";
         conn.send(object);
         clients.add(cliente);
     }
@@ -37,35 +41,47 @@ public class Server extends WebSocketServer{
     @Override
     public void onMessage(WebSocket conn, String message) {
         JSONObject obj = new JSONObject(message);
-        String tipo = (String)obj.get("tipo"); 
-         if (tipo.equals("ping")) {
-            message="pong";
-            conn.send(message); 
-        }else if (tipo.equals("message")){
-            this.sendToAll(conn,(String) obj.get("message")); 
+        String tipo = (String) obj.get("tipo");
+        String object = "";
+        switch (tipo) {
+            case "ping":
+                message = "pong";
+                conn.send(message);
+                break;
+            case "message":
+                this.sendToAll(conn, (String) obj.get("message"));
+                break;
+            case "nuevo":
+                for (int i = 0; i < clients.size(); i++) {
+                    if (clients.get(i).getHash()==Integer.parseInt(obj.getString("hash"))) {
+                        clients.get(i).setNombre(obj.getString("usuario")); 
+                        object = "{\"tipo\":\"conexion\",\"hash\":"+clients.get(i).getHash()+",\"nombre\":\"" + clients.get(i).getNombre() + "\"}";
+                        break;
+                    }
+                }
+                this.sendToAll(conn, object); 
+                break;
+            case "private":
+                JSONObject priv = new JSONObject("mensaje");
+                int hash = (int) priv.getInt("hash");
+                for (int i = 0; i < clients.size(); i++) {
+                    if (clients.get(i).getHash() == hash) {
+                        object = "{\"tipo\":\"private\",\"nombre\":\"" + priv.getString("nombre") + "\",\"mensaje:\"" + priv.getString("mensaje") + "}";
+                        clients.get(i).getConn().send(object);
+                    }
+                }
+                break;
+            default:
+                break;
         }
-        else if(tipo.equals("nuevo")){
-            String object = "{\"tipo\":\"conexion\",\"mensaje\":\""+obj.get("user")+"\",\"}";
-            this.sendToAll(conn, object);
-        }
-        else if(tipo.equals("private")){
-            JSONObject priv = new JSONObject("mensaje");
-            int hash = (int) priv.getInt("hash");
-             for (int i = 0; i < clients.size(); i++) {
-                 if(clients.get(i).getHash()==hash){
-                     String object = "{\"tipo\":\"private\",\"nombre\":\""+priv.getString("nombre")+"\",\"mensaje:\""+priv.getString("mensaje")+"}";
-                     clients.get(i).getConn().send(object);
-                 }
-             }
-        }
-        System.out.println((String) obj.get("message")); 
+        //System.out.println(message);
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        System.out.println("Client disconnected: " + reason);
+        System.out.println("Client "+code+" disconnected: " + reason);
         for (int i = 0; i < clients.size(); i++) {
-            if (clients.get(i).getConn().equals(i)) {
+            if (clients.get(i).getConn().equals(conn)) {
                 clients.remove(i);
                 break;
             }
@@ -82,23 +98,18 @@ public class Server extends WebSocketServer{
     }
 
     private void sendToAll(WebSocket conn, String message) {
-       /*
-    	Iterator it = Rooms.get(myroom).iterator();
-        while (it.hasNext()) {
-            WebSocket c = (WebSocket)it.next();
-            if (c != conn) c.send(message);
+
+        for (int i = 0; i < clients.size(); i++) {
+            WebSocket c = (WebSocket) clients.get(i).getConn();
+            if (c != conn) {
+                c.send(message);
+            }
         }
-        */
-    	for(int i =0;i<clients.size();i++) {
-    		WebSocket c = (WebSocket)clients.get(i).getConn();
-            if (c != conn) c.send(message);
-    	}
     }
-    
+
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
     }
-    
-    
+
 }

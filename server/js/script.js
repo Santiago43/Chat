@@ -7,36 +7,44 @@ websocket.onopen = function (evt) { //manejamos los eventos...
 	console.log("Conectado..."); //... y aparecerá en la pantalla
 	ping();
 	var a = {
-		type: "nuevo",
-		user: getCookie("usuario")
+		tipo: "nuevo",
+		user: getCookie("usuario"),
+		hash: getCookie("hash")
 	};
 	enviarMensaje(JSON.stringify(a));
 };
 
 websocket.onmessage = function (evt) { // cuando se recibe un mensaje
 	console.log("Mensaje recibido:" + evt.data);
-	var datos = evt.data;
 	console.log(evt);
 	//Rebote
 	if (evt.data === "pong") {
 		ping();
 	} else {
-		var obj = JSON.parse(datos);
+		var obj = JSON.parse(evt.data);
 		if(obj.tipo==="hash"){
 			//Envío de código Hash para notificar a los demás que hay un nuevo conectado
 			setCookie("hash",obj.hash,10);
 			var nombreUser= getCookie("usuario");
 			var texto = {
 				tipo:'nuevo',
-				user: nombreUser
+				hash: getCookie("hash"),
+				usuario: nombreUser
 			};
+			var conectados = obj.conectados;
+			for (let index = 0; index < conectados.length; index++) {
+				var user = conectados[index];
+				$("tbody").append('<tr> <td>'+conectados[index].usuario+'</td></tr>');
+				$("#conectados").append('<option value="'+conectados[index].hash+'">'+conectados[index].usuario+'</option>')
+			}
 			enviarMensaje(JSON.stringify(texto));
+
 		}
 		else if(obj.tipo ==="conexion"){
 			//Nueva conexión
 			console.log(obj.mensaje);
-			$("tbody").append('<tr> <td>'+obj.mensaje+'</td></tr>');
-			$("#conectados").append('<option value="'+obj.mensaje+'">'+obj.mensaje+'</option>')
+			$("tbody").append('<tr> <td>'+obj.nombre+'</td></tr>');
+			$("#conectados").append('<option value="'+obj.hash+'">'+obj.nombre+'</option>')
 		}
 		//$(".cajaContenedora").append("<b>" + chat.name + ": <b>" + chat.mensaje + "<br>");
 	}
