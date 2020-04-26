@@ -48,26 +48,36 @@ public class Server extends WebSocketServer {
                 message = "pong";
                 conn.send(message);
                 break;
-            case "message":
-                this.sendToAll(conn, (String) obj.get("message"));
+            case "publico":
+                JSONObject mensajePublico = new JSONObject(obj.getString("message"));                
+                object = "{\"tipo\":\"publico\",\"nombre\":\""+mensajePublico.get("nombre")+"\",\"mensaje\":\"" +mensajePublico.get("mensaje") + "\"}";
+                this.sendToAll(conn, object);
                 break;
             case "nuevo":
                 for (int i = 0; i < clients.size(); i++) {
                     if (clients.get(i).getHash()==Integer.parseInt(obj.getString("hash"))) {
                         clients.get(i).setNombre(obj.getString("usuario")); 
-                        object = "{\"tipo\":\"conexion\",\"hash\":"+clients.get(i).getHash()+",\"nombre\":\"" + clients.get(i).getNombre() + "\"}";
+                        object = "{\"tipo\":\"conexion\",\"hash\":\""+clients.get(i).getHash()+"\",\"nombre\":\"" + clients.get(i).getNombre() + "\"}";
                         break;
                     }
                 }
                 this.sendToAll(conn, object); 
                 break;
-            case "private":
-                JSONObject priv = new JSONObject("mensaje");
-                int hash = (int) priv.getInt("hash");
+            case "privado":
+                int hashDestino = (int) obj.getInt("hashDestino");
+                JSONObject priv = new JSONObject(obj.getString("message"));
+                Cliente cliente = null;
                 for (int i = 0; i < clients.size(); i++) {
-                    if (clients.get(i).getHash() == hash) {
-                        object = "{\"tipo\":\"private\",\"nombre\":\"" + priv.getString("nombre") + "\",\"mensaje:\"" + priv.getString("mensaje") + "}";
+                    if(clients.get(i).getConn().equals(conn)){
+                        cliente = clients.get(i);
+                        break;
+                    }
+                }
+                for (int i = 0; i < clients.size(); i++) {
+                    if (clients.get(i).getHash() == hashDestino) {
+                        object = "{\"tipo\":\"privado\",\"nombre\":\"" + cliente.getNombre()+ "\",\"mensaje\":\"" + priv.getString("mensaje") + "\"}";
                         clients.get(i).getConn().send(object);
+                        break;
                     }
                 }
                 break;

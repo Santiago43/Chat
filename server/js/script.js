@@ -46,7 +46,13 @@ websocket.onmessage = function (evt) { // cuando se recibe un mensaje
 			$("tbody").append('<tr> <td>'+obj.nombre+'</td></tr>');
 			$("#conectados").append('<option value="'+obj.hash+'">'+obj.nombre+'</option>')
 		}
-		//$(".cajaContenedora").append("<b>" + chat.name + ": <b>" + chat.mensaje + "<br>");
+		else if(obj.tipo==="publico"){
+			$(".cajaContenedora").append("<b>" + obj.nombre + ": </b>" + obj.mensaje + "<br>");
+		}
+		else if(obj.tipo==="privado"){
+			$(".cajaContenedora").append("<b>" + obj.nombre + "(en privado): </b>" + obj.mensaje + "<br>")
+		}
+		
 	}
 
 };
@@ -62,14 +68,15 @@ function enviarMensaje(texto) {
 
  $("#enviar").click(function () {
 	var usuario = {
-		name: getCookie("user"),
-		mensaje: $("#mensaje").val()}
-	var vaina = JSON.stringify(usuario);
+		nombre: getCookie("usuario"),
+		mensaje: $("#mensaje").val()
+	}
+	var mensajePublico = JSON.stringify(usuario);
 	var a = {
-		type: 'message',
-		message: vaina
+		tipo: 'publico',
+		message: mensajePublico
 	};
-	console.log(vaina);
+//	console.log(vaina);
 	enviarMensaje(JSON.stringify(a));
 });
 
@@ -79,15 +86,13 @@ $("#privado").click(function () {
 		name: getCookie("usuario"),
 		mensaje: $("#mensaje").val()
 	}
-	var vaina = JSON.stringify(usuario);
+	var mensajePrivado = JSON.stringify(usuario);
 	var a = {
-		tipo: "private",
-		nombre: usuario1,
-		hashOrigen :"",
-		hashDestino :"",
-		message: vaina
+		tipo: "privado",
+		hashDestino :$("#conectados").val(),
+		message: mensajePrivado
 	};
-	console.log(vaina);
+//	console.log(vaina);
 	enviarMensaje(JSON.stringify(a));
 });
 
