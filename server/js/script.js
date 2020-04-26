@@ -93,7 +93,7 @@ $("#privado").click(function () {
 		hashDestino :$("#conectados").val(),
 		message: mensajePrivado
 	};
-	$(".cajaContenedora").append("<b>" + usuario.nombre + "(en privado): </b>" + usuario.mensaje + "<br>");
+	$(".cajaContenedora").append("<b>" + usuario.name + "(en privado): </b>" + usuario.mensaje + "<br>");
 //	console.log(vaina);
 	enviarMensaje(JSON.stringify(a));
 });
